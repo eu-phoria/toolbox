@@ -113,6 +113,7 @@ function buildQROptions(preset, size) {
 // ========== プリセットロゴ ==========
 
 const LOGOS = [
+  { name: "EUPHORIA", file: "euphoria.png" },
   { name: "X", file: "x.svg" },
   { name: "Instagram", file: "instagram.svg" },
   { name: "LINE", file: "line.svg" },
@@ -147,12 +148,20 @@ function initLogos() {
     btn.title = logo.name;
     btn.dataset.logo = logo.file;
 
-    // SVGを読み込んでインライン表示
-    fetch(`logos/${logo.file}`)
-      .then((r) => r.text())
-      .then((svg) => {
-        btn.innerHTML = svg;
-      });
+    // ロゴをインライン表示
+    if (logo.file.endsWith(".svg")) {
+      fetch(`logos/${logo.file}`)
+        .then((r) => r.text())
+        .then((svg) => {
+          btn.innerHTML = svg;
+        });
+    } else {
+      const img = document.createElement("img");
+      img.src = `logos/${logo.file}`;
+      img.alt = logo.name;
+      img.style.cssText = "width:100%;height:100%;object-fit:contain;";
+      btn.appendChild(img);
+    }
 
     btn.addEventListener("click", () => {
       // SVGをBlobURLに変換してqr-code-stylingに渡す
